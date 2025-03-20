@@ -34,4 +34,4 @@ jobs:
 
       - name: Deploy with Helm on MicroK8s
         run: |
-          microk8s helm3 upgrade --install my-nginx ./nginx-chart --force --recreate-pods
+          microk8s helm3 upgrade --install my-nginx ./nginx-chart
