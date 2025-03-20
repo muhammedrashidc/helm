@@ -1,0 +1,37 @@
+name: Helm CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t muhammedrashid/helm:latest .
+          docker push muhammedrashid/helm:latest
+
+  deploy:
+    runs-on: self-hosted  # Run on your local MicroK8s machine
+    needs: build-and-push
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy with Helm on MicroK8s
+        run: |
+          microk8s helm3 upgrade --install my-nginx ./nginx-chart
