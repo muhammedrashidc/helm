@@ -34,5 +34,6 @@ jobs:
 
       - name: Deploy with Helm on MicroK8s
         run: |
-          microk8s helm3 upgrade --install my-nginx ./nginx-chart
           microk8s kubectl delete deployment my-nginx-nginx-chart
+          microk8s helm3 upgrade --install my-nginx ./nginx-chart
+          
