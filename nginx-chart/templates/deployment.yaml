@@ -17,6 +17,8 @@ spec:
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      annotations:
+        rollme: "{{ randAlphaNum 5 }}"
       labels:
         {{- include "nginx-chart.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
