@@ -1,0 +1,35 @@
+name: CI/CD for Helm on MicroK8s
+
+on:
+  push:
+    branches:
+      - main  # Runs on every push to the main branch
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker Image
+        run: docker build -t muhammedrashid/helm .
+
+      - name: Push Docker Image
+        run: docker push muhammedrashid/helm
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
+
+      - name: Deploy Helm Chart
+        run: |
+          helm upgrade --install my-nginx ./nginx-chart --set image.repository=muhammedrashid/helm --set image.tag=latest
