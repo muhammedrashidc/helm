@@ -10,7 +10,7 @@ image:
   pullPolicy: Always
 
 # Deployment Configuration
-replicaCount: 2  # Set the number of replicas
+replicaCount: 4  # Set the number of replicas
 
 # Resource Requests & Limits
 resources:
